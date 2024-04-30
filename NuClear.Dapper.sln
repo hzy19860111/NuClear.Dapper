@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{6C61AD49-900F-4B98-A13A-244CA00BBA20}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuClear.Dapper", "src\NuClear.Dapper\NuClear.Dapper.csproj", "{EAC53CFC-0A21-460C-9C30-B61865965EC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuClear.Dapper.MySql", "src\NuClear.Dapper.MySql\NuClear.Dapper.MySql.csproj", "{BB888F2F-FA1E-4DC0-8E4B-DC489835EB54}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuClear.Dapper.SqlServer", "src\NuClear.Dapper.SqlServer\NuClear.Dapper.SqlServer.csproj", "{20E75F9F-1C61-4F51-9B78-FD19AA2E2D37}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuClear.Dapper.UnitTest", "src\NuClear.Dapper.UnitTest\NuClear.Dapper.UnitTest.csproj", "{D49AC441-5B4F-44E7-8FF2-A404811D3578}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAC53CFC-0A21-460C-9C30-B61865965EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC53CFC-0A21-460C-9C30-B61865965EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAC53CFC-0A21-460C-9C30-B61865965EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAC53CFC-0A21-460C-9C30-B61865965EC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB888F2F-FA1E-4DC0-8E4B-DC489835EB54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB888F2F-FA1E-4DC0-8E4B-DC489835EB54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB888F2F-FA1E-4DC0-8E4B-DC489835EB54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB888F2F-FA1E-4DC0-8E4B-DC489835EB54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20E75F9F-1C61-4F51-9B78-FD19AA2E2D37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20E75F9F-1C61-4F51-9B78-FD19AA2E2D37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20E75F9F-1C61-4F51-9B78-FD19AA2E2D37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20E75F9F-1C61-4F51-9B78-FD19AA2E2D37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D49AC441-5B4F-44E7-8FF2-A404811D3578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D49AC441-5B4F-44E7-8FF2-A404811D3578}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D49AC441-5B4F-44E7-8FF2-A404811D3578}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D49AC441-5B4F-44E7-8FF2-A404811D3578}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB524368-6F0E-4AE6-824F-EBC918CBCDD6}
+	EndGlobalSection
+EndGlobal

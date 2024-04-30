@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SqlResource>
+  <Select>
+    SELECT [Id],[OrderNo],[OmsOrderId],[OmsOrderNo],OwnerId,SecOwnerId,[HasCreateNote],[OrderType],[PayType],[Bonus],[Coupons]FROM [dbo].[Orders] WITH(NOLOCK)
+  </Select>
+  <Select1>
+    <![CDATA[
+		  SELECT [Id],[OrderNo],[OmsOrderId],[OmsOrderNo],OwnerId,SecOwnerId,[HasCreateNote],[OrderType],[PayType],[Bonus],[Coupons]FROM [dbo].[Orders] WITH(NOLOCK)
+		]]>
+  </Select1>
+  <QueryPagedSaleProfitByMonth>
+    SELECT *    FROM dbo.NoteItems ni WITH(NOLOCK)    INNER JOIN dbo.OrderOutStockNote o WITH(NOLOCK) ON ni.OrderOutStockNote_Id = o.Id    AND o.City_Id=@CityId    AND o.AuditState=9  AND o.IsDeleted =0 AND o.UserStatus = 0    AND (YEAR(o.BusinessTime)=@Year AND MONTH(o.BusinessTime)=@Month)<if test="SaleMode != null"><if test="SaleMode == 99"> AND ni.SaleMode IN (1,3,9)</if><if test="SaleMode != 99"> @SaleMode=ni.SaleMode</if></if><if test="SettlementType != null"> AND @SettlementType = ni.SettlementType</if><if test="FinancialBusinessType != null"> AND  @FinancialBusinessType=o.FinancialBusinessType</if><if test="StoreHouseId != null and StoreHouseId != '' "> AND  @StoreHouseId=o.StoreHouse_Id</if><if test="StoreHouseIds != null and StoreHouseIds.Length > 0 "> AND  o.StoreHouse_Id in @StoreHouseIds</if> OPTION(RECOMPILE)
+  </QueryPagedSaleProfitByMonth>
+  <SelectByChoose>
+    select * from Orders o with(nolock)    where 1 = 1<choose><when test="Id != null and id != ''"> and Id = @Id</when><when test="NoteNo != null and NoteNo != ''"> and NoteNo = @NoteNo</when><otherwise> and BusinessTime >= '2022-8-1'</otherwise></choose>
+  </SelectByChoose>
+  <SelectByChooseAndIf>
+    select * from Orders o with(nolock)    where 1 = 1<choose><when test="Id != null and id != ''"> and Id = @Id</when><when test="NoteNo != null and NoteNo != ''"> and noteno=@NoteNo<if test="SelectHiden != 1"> and UserStatus = 1</if></when><otherwise> and BusinessTime >= '2022-8-1'</otherwise></choose>
+  </SelectByChooseAndIf>
+</SqlResource>

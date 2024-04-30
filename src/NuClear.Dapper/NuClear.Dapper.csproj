@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<AssemblyVersion>1.0.0.0</AssemblyVersion>
+	<AssemblyName>NuClear.Dapper</AssemblyName>
+	<RootNamespace>NuClear.Dapper</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Context\ERPContext.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Dapper" Version="2.0.35" />
+	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+    <PackageReference Include="NuClear.Snowflake" Version="1.0.0" />
+    <PackageReference Include="OGNL.Net" Version="1.0.1" />
+  </ItemGroup>
+
+</Project>
