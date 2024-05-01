@@ -29,8 +29,7 @@ namespace NuClear.Dapper.SqlServer
 
         public string CreatePagedSql(string selectSql, string whereSql = null, string sortSql = null, Pager pager = null)
         {
-            return string.Format("{0} {1} {2} {3}", selectSql, whereSql, sortSql,
-                "OFFSET (@PageIndex-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY");
+            return $"{selectSql} {whereSql} {sortSql} OFFSET (@PageIndex-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
         }
 
         public string CreateTop1SelectSql(string selectSql, string whereSql = "", string sortSql = "")

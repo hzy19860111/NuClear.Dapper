@@ -1,7 +1,4 @@
-﻿using System.Collections.Concurrent;
-using NuClear.Dapper.Exceptions;
-using NuClear.Dapper.SqlResources;
-using MySql.Data.MySqlClient;
+﻿using NuClear.Dapper.SqlResources;
 
 namespace NuClear.Dapper.MySql
 {

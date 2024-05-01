@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NuClear.Dapper.Exceptions;
+using System;
 using System.Collections.Generic;
-using NuClear.Dapper.Exceptions;
 
 namespace NuClear.Dapper.AggregateQueryObject
 {

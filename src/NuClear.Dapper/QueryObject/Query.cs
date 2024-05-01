@@ -101,7 +101,8 @@ namespace NuClear.Dapper.QueryObject
                     else
                         sql = criterionSqlParser.ToSql(c);
                         
-                    if (c.Operator != CriteriaOperator.IsNull && c.Operator != CriteriaOperator.IsNotNull
+                    if (c.Operator != CriteriaOperator.IsNull 
+                        && c.Operator != CriteriaOperator.IsNotNull
                         && c.Operator != CriteriaOperator.None
                         && !(c is Criterion.TableValueCriterion))
                     {

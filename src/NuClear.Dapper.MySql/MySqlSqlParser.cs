@@ -29,8 +29,7 @@ namespace NuClear.Dapper.MySql
 
         public string CreatePagedSql(string selectSql, string whereSql = null, string sortSql = null, Pager pager = null)
         {
-            return string.Format("{0} {1} {2} {3}", selectSql, whereSql, sortSql,
-                $"LIMIT {(pager.PageIndex-1)*pager.PageSize}, {pager.PageSize}");
+            return $"{selectSql} {whereSql} {sortSql} LIMIT {(pager.PageIndex - 1) * pager.PageSize},{pager.PageSize}";
         }
 
         public string CreateTop1SelectSql(string selectSql, string whereSql = "", string sortSql = "")

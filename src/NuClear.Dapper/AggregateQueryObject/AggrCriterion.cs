@@ -22,8 +22,14 @@ namespace NuClear.Dapper.AggregateQueryObject
         /// </summary>
         public string ResultPropertyName { get; set; }
 
+        /// <summary>
+        /// 聚合函数类型
+        /// </summary>
         public AggrCriteriaOperator Operator { get; private set; }
 
+        /// <summary>
+        /// 返回值类型
+        /// </summary>
         public Type ValueType { get; private set; }
 
         /// <summary>

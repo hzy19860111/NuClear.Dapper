@@ -8,7 +8,6 @@ namespace NuClear.Dapper.MySql
         public string ToSql(Criterion criterion)
         {
             string oper = this.ToSqlOperator(criterion.Operator);
-            //if (oper == null) return null;
 
             var aliasName = string.IsNullOrWhiteSpace(criterion.TableAliasName) ? "" : criterion.TableAliasName + ".";
             var fixedKeywordPropertyName = FixedKeywordPropertyName(criterion.PropertyName);
