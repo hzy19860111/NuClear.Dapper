@@ -1,5 +1,5 @@
-﻿using System;
-using NuClear.Dapper.QueryObject;
+﻿using NuClear.Dapper.QueryObject;
+using System;
 
 namespace NuClear.Dapper.SqlServer
 {
@@ -9,7 +9,6 @@ namespace NuClear.Dapper.SqlServer
         {
             string oper = criterion.Operator.ToSqlOperator();
 
-            var aliasName = string.IsNullOrWhiteSpace(criterion.TableAliasName) ? "" : criterion.TableAliasName + ".";
             var fixedKeywordPropertyName = FixedKeywordPropertyName(criterion.PropertyName);
 
             if (oper == null && !string.IsNullOrWhiteSpace(fixedKeywordPropertyName))
@@ -17,35 +16,34 @@ namespace NuClear.Dapper.SqlServer
                 return fixedKeywordPropertyName;
             }
 
+            var aliasName = string.IsNullOrWhiteSpace(criterion.TableAliasName) ? "" : criterion.TableAliasName + ".";
+            var tableAndPrepertyName = $"{aliasName}{fixedKeywordPropertyName}";
+
             if (criterion.Operator == CriteriaOperator.Like || criterion.Operator == CriteriaOperator.NotLike)
             {
                 criterion.Value = GetESCAPEString(criterion.Value.ToString());
 
-                return $"{aliasName}{fixedKeywordPropertyName} {oper} '%' + @{criterion.PropertyParameterName} + '%' ESCAPE N'~'";
+                return $"{tableAndPrepertyName} {oper} '%' + @{criterion.PropertyParameterName} + '%' ESCAPE N'~'";
             }
 
             if (criterion.Operator == CriteriaOperator.LeftLike)
             {
                 criterion.Value = GetESCAPEString(criterion.Value.ToString());
 
-                return $"{aliasName}{fixedKeywordPropertyName} {oper} '%' + @{criterion.PropertyParameterName} ESCAPE N'~'";
+                return $"{tableAndPrepertyName} {oper} '%' + @{criterion.PropertyParameterName} ESCAPE N'~'";
             }
 
             if (criterion.Operator == CriteriaOperator.RightLike)
             {
                 criterion.Value = GetESCAPEString(criterion.Value.ToString());
-                return $"{aliasName}{fixedKeywordPropertyName} {oper} @{criterion.PropertyParameterName} + '%' ESCAPE N'~'";
+                return $"{tableAndPrepertyName} {oper} @{criterion.PropertyParameterName} + '%' ESCAPE N'~'";
             }
 
-            if (criterion.Operator == CriteriaOperator.In || criterion.Operator == CriteriaOperator.NotIn)
-            {
-                return $"{aliasName}{fixedKeywordPropertyName} {oper} @{criterion.PropertyParameterName}";
-            }
             if (criterion.Operator == CriteriaOperator.IsNotNull || criterion.Operator == CriteriaOperator.IsNull)
             {
-                return $"{aliasName}{fixedKeywordPropertyName} {oper}";
+                return $"{tableAndPrepertyName} {oper}";
             }
-            return $"{aliasName}{fixedKeywordPropertyName}{oper}@{criterion.PropertyParameterName}";
+            return $"{tableAndPrepertyName} {oper} @{criterion.PropertyParameterName}";
         }
 
         private string GetESCAPEString(object value)
@@ -58,13 +56,13 @@ namespace NuClear.Dapper.SqlServer
                      .Replace("'", "''");
         }
 
-
         public string ToTableValueSql(Criterion criterion)
         {
             string oper = criterion.Operator.ToSqlOperator();
-            if (oper == null) return null;
-
-            var aliasName = string.IsNullOrWhiteSpace(criterion.TableAliasName) ? "" : $"{criterion.TableAliasName}.";
+            if (oper == null)
+            {
+                return null;
+            }
 
             if (criterion.Operator == CriteriaOperator.Like || criterion.Operator == CriteriaOperator.NotLike)
             {
@@ -76,14 +74,11 @@ namespace NuClear.Dapper.SqlServer
                 throw new NotSupportedException("表条件不支持 IsNotNull和IsNull操作符！");
             }
 
+            var aliasName = string.IsNullOrWhiteSpace(criterion.TableAliasName) ? "" : $"{criterion.TableAliasName}.";
+
             var fixedKeywordPropertyName = FixedKeywordPropertyName(criterion.PropertyName);
 
-            if (criterion.Operator == CriteriaOperator.In || criterion.Operator == CriteriaOperator.NotIn)
-            {
-                return $"{aliasName}{fixedKeywordPropertyName} {oper} {criterion.Value}";
-            }
-
-            return $"{aliasName}{fixedKeywordPropertyName}{oper}{criterion.Value}";
+            return $"{aliasName}{fixedKeywordPropertyName} {oper} {criterion.Value}";
         }
 
         private string FixedKeywordPropertyName(string propertyName)

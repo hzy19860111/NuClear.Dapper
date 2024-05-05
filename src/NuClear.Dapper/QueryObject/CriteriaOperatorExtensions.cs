@@ -36,5 +36,19 @@
                     return null;
             }
         }
+
+        public static bool IsLikeOperator(this CriteriaOperator criteriaOperator)
+        {
+            switch (criteriaOperator)
+            {
+                case CriteriaOperator.Like:
+                case CriteriaOperator.NotLike:
+                case CriteriaOperator.RightLike:
+                case CriteriaOperator.LeftLike:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }
