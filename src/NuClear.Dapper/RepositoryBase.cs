@@ -2,6 +2,7 @@
 using NuClear.Dapper.AggregateQueryObject;
 using NuClear.Dapper.Context;
 using NuClear.Dapper.QueryObject;
+using NuClear.Dapper.SqlResources;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,6 +18,7 @@ namespace NuClear.Dapper
         protected abstract IAggrQuerySqlParser AggrQuerySqlParser { get; }
         protected abstract ISqlParser SqlParser { get; }
         protected abstract ICriterionSqlParser CriterionSqlParser { get; }
+        protected abstract ISqlResource<TEntity> SqlResource { get; }
 
         protected IDbConnection Conn { get { return Context.Connection; } }
         protected IDbTransaction Tran { get { return Context.Transaction; } }
@@ -84,7 +86,6 @@ namespace NuClear.Dapper
         }
 
         #endregion
-
 
         #region FirstOrDefault
 
@@ -156,7 +157,7 @@ namespace NuClear.Dapper
             string whereSql = GetWhereSql(query, out object param);
             return await this.CountAsync(CombineCountSql(this.SelectSql, whereSql), param);
         }
-      
+
         #endregion
 
         #region Exists
@@ -684,10 +685,10 @@ namespace NuClear.Dapper
 
         #region Sql
         public virtual string TableAliasName { get { return ""; } }
-        public abstract string SelectSql { get; }
-        public abstract string InsertSql { get; }
-        public abstract string UpdateSql { get; }
-        public abstract string DeleteSql { get; }
+        public virtual string SelectSql { get { return SqlResource.Select; } } 
+        public virtual string InsertSql { get { return SqlResource.Insert; } } 
+        public virtual string UpdateSql { get { return SqlResource.Update; } } 
+        public virtual string DeleteSql { get { return SqlResource.Delete; } }
         #endregion
     }
 }
