@@ -5,16 +5,21 @@ namespace NuClear.Dapper.Context
 {
     public interface IContext : IDisposable
     {
-
+        /// <summary>
+        /// Id
+        /// </summary>
         string Id { get; }
+
         /// <summary>
         /// 数据库连接
         /// </summary>
         IDbConnection Connection { get; }
+
         /// <summary>
         /// 数据库事务
         /// </summary>
         IDbTransaction Transaction { get; }
+
         /// <summary>
         /// 是否已开启事务
         /// </summary>

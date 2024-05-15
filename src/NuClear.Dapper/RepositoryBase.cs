@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace NuClear.Dapper
 {
-    public abstract class RepositoryBase<TEntity> : IRepository<TEntity> where TEntity : IEntity
+    public abstract class RepositoryBase<TKey, TEntity> : IRepository<TKey, TEntity>
+        where TEntity : IEntity<TKey>
     {
         protected const int Default_CommandTimeout = 360;
         protected abstract IContext Context { get; }
@@ -89,7 +90,7 @@ namespace NuClear.Dapper
 
         #region FirstOrDefault
 
-        public virtual TEntity FirstOrDefault(string id)
+        public virtual TEntity FirstOrDefault(TKey id)
         {
             var query = QueryObject.Query.Create()
                   .Add(Criterion.Create("Id", id, CriteriaOperator.Equal, this.TableAliasName));
@@ -108,7 +109,7 @@ namespace NuClear.Dapper
             return this.Query<TEntity>(sql, param).FirstOrDefault();
         }
 
-        public virtual async Task<TEntity> FirstOrDefaultAsync(string id)
+        public virtual async Task<TEntity> FirstOrDefaultAsync(TKey id)
         {
             var query = QueryObject.Query.Create()
                   .Add(Criterion.Create("Id", id, CriteriaOperator.Equal, this.TableAliasName));
@@ -123,14 +124,16 @@ namespace NuClear.Dapper
         public virtual async Task<TEntity> FirstOrDefaultAsync(Query query, Sort sort = null)
         {
             var whereSql = GetWhereSql(query, out object param);
+            var sortSql = sort?.Translate();
 
-            return await this.QueryFirstOrDefaultAsync<TEntity>(this.SqlParser.CreateTop1SelectSql(SelectSql, whereSql,
-                sort?.Translate()), param);
+            var top1Sql = this.SqlParser.CreateTop1SelectSql(SelectSql, whereSql, sortSql);
+
+            return await this.InternalQueryFirstOrDefaultAsync<TEntity>(top1Sql, param);
         }
 
-        private async Task<TAny> QueryFirstOrDefaultAsync<TAny>(string query, object parameters = null, bool recompile = false)
+        private async Task<TAny> InternalQueryFirstOrDefaultAsync<TAny>(string query, object parameters = null)
         {
-            return await Conn.QueryFirstOrDefaultAsync<TAny>(query + GetRecompileSql(recompile), parameters, Tran, commandTimeout: Default_CommandTimeout);
+            return await Conn.QueryFirstOrDefaultAsync<TAny>(query, parameters, Tran, commandTimeout: Default_CommandTimeout);
         }
 
         #endregion
@@ -162,7 +165,7 @@ namespace NuClear.Dapper
 
         #region Exists
 
-        public virtual bool Exists(string id)
+        public virtual bool Exists(TKey id)
         {
             var query = QueryObject.Query.Create().Add(Criterion.Create("Id", id, CriteriaOperator.Equal, this.TableAliasName));
             if (typeof(IDeleted).IsAssignableFrom(typeof(TEntity)))
@@ -180,7 +183,7 @@ namespace NuClear.Dapper
             return this.Count(query) > 0;
         }
 
-        public virtual async Task<bool> ExistsAsync(string id)
+        public virtual async Task<bool> ExistsAsync(TKey id)
         {
             var query = QueryObject.Query.Create().Add(Criterion.Create("Id", id, CriteriaOperator.Equal, this.TableAliasName));
             if (typeof(IDeleted).IsAssignableFrom(typeof(TEntity)))
@@ -633,11 +636,11 @@ namespace NuClear.Dapper
         {
             Execute(DeleteSql, new { entity.Id });
         }
-        public virtual void Delete(string id)
+        public virtual void Delete(TKey id)
         {
             Execute(DeleteSql, new { Id = id });
         }
-        public virtual void DeleteBatch(params string[] ids)
+        public virtual void DeleteBatch(params TKey[] ids)
         {
             foreach (var id in ids)
             {
@@ -656,7 +659,7 @@ namespace NuClear.Dapper
             await ExecuteAsync(DeleteSql, new { entity.Id });
         }
 
-        public virtual async Task DeleteAsync(string id)
+        public virtual async Task DeleteAsync(TKey id)
         {
             await ExecuteAsync(DeleteSql, new { Id = id });
         }
@@ -685,10 +688,16 @@ namespace NuClear.Dapper
 
         #region Sql
         public virtual string TableAliasName { get { return ""; } }
-        public virtual string SelectSql { get { return SqlResource.Select; } } 
-        public virtual string InsertSql { get { return SqlResource.Insert; } } 
-        public virtual string UpdateSql { get { return SqlResource.Update; } } 
+        public virtual string SelectSql { get { return SqlResource.Select; } }
+        public virtual string InsertSql { get { return SqlResource.Insert; } }
+        public virtual string UpdateSql { get { return SqlResource.Update; } }
         public virtual string DeleteSql { get { return SqlResource.Delete; } }
         #endregion
     }
+
+    public abstract class RepositoryBaseWithLongKey<TEntity> : RepositoryBase<long, TEntity>
+        where TEntity : IEntityWithLongKey
+    {
+    }
+
 }

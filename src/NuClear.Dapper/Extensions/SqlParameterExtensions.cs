@@ -13,7 +13,7 @@ namespace NuClear.Dapper.Extensions
             {
                 dic.Add(item.ParameterName, item.Value);
             }
-            return obj as object;
+            return obj;
         }
     }
 }

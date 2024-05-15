@@ -33,10 +33,12 @@ namespace NuClear.Dapper.QueryObject
             subQueries.Add(subQuery);
             return this;
         }
+
         internal void HandleRepeatProperty()
         {
             var criterions = GetAllCriterions();
-            var repeatProperties = criterions.Where(x => x.Operator != CriteriaOperator.None).GroupBy(c => c.PropertyName.ToLower())
+            var repeatProperties = criterions.Where(x => x.Operator != CriteriaOperator.None)
+                .GroupBy(c => c.PropertyName.ToLower())
                 .Where(c => c.Count() > 1)
                 .Select(c => new { PropertyName = c.Key, Count = c.Count() }).ToArray();
 

@@ -5,7 +5,7 @@ using System.Linq;
 namespace NuClear.Dapper.Utility
 {
     /// <summary>
-    /// 根据数组 分页处理业务 工具类（一般用作dapper 根据in查询，dapper in 查询将数组 拼接为 参数，最多支持2000）
+    /// 根据数组 分页处理业务 工具类（一般用作dapper 根据in查询，dapper in 查询将数组 拼接为 参数，SqlServer最多支持2000）
     /// </summary>
     public static class BatchFuncUtility
     {
@@ -23,13 +23,21 @@ namespace NuClear.Dapper.Utility
             var filterNullBatchSource = batchSource?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 
             if (filterNullBatchSource == null || !filterNullBatchSource.Any())
+            {
                 return new List<TResult>(0);
+            }
 
             IEnumerable<TResult> result = null;
             for (int i = 0; i < (filterNullBatchSource.Length - 1) / batchCount + 1; i++)
             {
-                if (result == null) result = func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
-                else result = result.Union(func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray()));
+                if (result == null)
+                {
+                    result = func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
+                }
+                else
+                {
+                    result = result.Union(func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray()));
+                }
             }
 
             return result.ToList();
@@ -45,17 +53,24 @@ namespace NuClear.Dapper.Utility
         /// <returns></returns>
         public static List<TResult> BatchFuncGenericSource<TSrouce, TResult>(TSrouce[] batchSource, Func<TSrouce[], List<TResult>> func, int batchCount = 200)
         {
-
             var filterNullBatchSource = batchSource?.ToArray();
 
             if (filterNullBatchSource == null || !filterNullBatchSource.Any())
+            {
                 return new List<TResult>(0);
+            }
 
             IEnumerable<TResult> result = null;
             for (int i = 0; i < (filterNullBatchSource.Length - 1) / batchCount + 1; i++)
             {
-                if (result == null) result = func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
-                else result = result.Union(func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray()));
+                if (result == null)
+                {
+                    result = func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
+                }
+                else
+                {
+                    result = result.Union(func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray()));
+                }
             }
 
             return result.ToList();
@@ -75,7 +90,9 @@ namespace NuClear.Dapper.Utility
             var filterNullBatchSource = batchSource?.Where(s => s != null).ToArray();
 
             if (filterNullBatchSource == null || !filterNullBatchSource.Any())
+            {
                 return;
+            }
 
             for (int i = 0; i < (filterNullBatchSource.Length - 1) / batchCount + 1; i++)
             {

@@ -1,5 +1,5 @@
-﻿using System;
-using NuClear.Dapper.Context;
+﻿using NuClear.Dapper.Context;
+using System;
 
 namespace NuClear.Dapper
 {
@@ -43,41 +43,11 @@ namespace NuClear.Dapper
         }
     }
 
-    public class UnitOfWorkCompleteHandle : IUnitOfWorkCompleteHandle
+    public class UnitOfWorkCompleteHandle : UnitOfWorkCompleteHandle<IContext>, IUnitOfWorkCompleteHandle
     {
-        private readonly IUnitOfWork _uow;
-        public UnitOfWorkCompleteHandle(IUnitOfWork uow)
+        public UnitOfWorkCompleteHandle(UnitOfWork unitOfWork) : base(unitOfWork)
         {
-            _uow = uow;
-        }
-        private bool disposed = false;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    if (_uow.Context.IsTransactionStarted)
-                    {
-                        try
-                        {
-                            _uow.Rollback();
-                        }
-                        catch
-                        {
-                            //do nothing
-                        }
-                    }
-                }
-            }
-            this.disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

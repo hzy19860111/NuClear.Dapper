@@ -1,9 +1,7 @@
-﻿using System;
+﻿using NuClear.Dapper.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
-using NuClear.Dapper.Exceptions;
 
 namespace NuClear.Dapper.SqlResources.Scripting
 {
@@ -27,10 +25,6 @@ namespace NuClear.Dapper.SqlResources.Scripting
             _nodeHandlerMap.Add("choose", new ChooseNodeHandler());
             _nodeHandlerMap.Add("otherwise", new OtherwiseNodeHandler());
             _nodeHandlerMap.Add("when", new IfNodeHandler());
-
-            //_nodeHandlerMap.Add("trim", new TrimHandler());
-            //_nodeHandlerMap.Add("where", new WhereHandler());
-            //_nodeHandlerMap.Add("set", new SetHandler());
         }
 
         public static MixedSqlNode ParseDynamicTags(this XElement node)
@@ -50,11 +44,7 @@ namespace NuClear.Dapper.SqlResources.Scripting
                 {
                     var elementNode = XElement.Parse(child.ToString());
                     var nodeName = elementNode.Name.ToString();
-                    INodeHandler handler = GetNodeHandler(nodeName);
-                    if (handler == null)
-                    {
-                        throw new SqlParseException($"不识别的ElementName：{ nodeName }!");
-                    }
+                    INodeHandler handler = GetNodeHandler(nodeName) ?? throw new SqlParseException($"不识别的ElementName：{nodeName}!");
                     handler.HandleNode(elementNode, contents);
                 }
             }

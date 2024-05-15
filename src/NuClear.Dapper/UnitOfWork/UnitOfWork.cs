@@ -61,63 +61,10 @@ namespace NuClear.Dapper
         #endregion
     }
 
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : UnitOfWork<IContext>, IUnitOfWork<IContext>, IUnitOfWork
     {
-        internal readonly IContext _context;
-        public UnitOfWork(IContext context)
+        public UnitOfWork(IContext context) : base(context)
         {
-            this._context = context;
         }
-
-        public IContext Context { get { return _context; } }
-
-        public IUnitOfWorkCompleteHandle Begin()
-        {
-            if (_context.IsTransactionStarted)
-            {
-                throw new InvalidOperationException("已开启事务.");
-            }
-            _context.BeginTransaction();
-            System.Console.WriteLine($"===========>  事务已开启, {_context.Id}");
-            return new UnitOfWorkCompleteHandle(this);
-        }
-        public void Commit()
-        {
-            if (!_context.IsTransactionStarted)
-                throw new InvalidOperationException("事务已提交或被释放.");
-
-            _context.Commit();
-            System.Console.WriteLine($"===========>  事务已提交, {_context.Id}");
-        }
-        public void Rollback()
-        {
-            if (!_context.IsTransactionStarted)
-                throw new InvalidOperationException("当前无事务.");
-            _context.Rollback();
-            System.Console.WriteLine($"===========>  事务已回滚, {_context.Id}");
-        }
-
-        #region IDisposed
-
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

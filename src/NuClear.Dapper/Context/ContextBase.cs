@@ -30,8 +30,6 @@ namespace NuClear.Dapper.Context
             get { return _transaction; }
         }
 
-
-
         protected abstract void CreateConnection();
 
         protected ContextBase()
@@ -53,14 +51,21 @@ namespace NuClear.Dapper.Context
             if (_isTransactionStarted)
                 throw new InvalidOperationException("已开启事务.");
 
-            if (_connection.State == ConnectionState.Closed)
-                _connection.Open();
+            EnsureOpenConnection();
 
             _transaction = _connection.BeginTransaction();
 
             _isTransactionStarted = true;
 
             DebugPrint("事务开启.");
+        }
+
+        private void EnsureOpenConnection()
+        {
+            if (_connection.State == ConnectionState.Closed)
+            {
+                _connection.Open();
+            }
         }
 
         public void Commit()
@@ -80,7 +85,9 @@ namespace NuClear.Dapper.Context
         public void Rollback()
         {
             if (!_isTransactionStarted)
+            {
                 throw new InvalidOperationException("当前无事务.");
+            }
 
             _transaction.Rollback();
             _transaction.Dispose();
@@ -99,7 +106,10 @@ namespace NuClear.Dapper.Context
             {
                 if (_isTransactionStarted)
                 {
-                    try { Rollback(); }
+                    try
+                    {
+                        Rollback();
+                    }
                     catch
                     {
                         DebugPrint("事务已开启，释放数据库连接回滚.");

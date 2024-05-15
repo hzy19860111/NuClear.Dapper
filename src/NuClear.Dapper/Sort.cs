@@ -5,12 +5,13 @@ namespace NuClear.Dapper
 {
     public class Sort
     {
-        public static Sort DefaultSort { get { return new Sort().Add(SortCondition.Create("CreateTime", false)); } }
+        private readonly List<SortCondition> _sort = new List<SortCondition>();
         private Sort()
         {
         }
 
-        private readonly List<SortCondition> _sort = new List<SortCondition>();
+        public static Sort DefaultSort { get { return new Sort().Add(SortCondition.Create("CreateTime", false)); } }
+
         public IEnumerable<SortCondition> Sorts { get { return this._sort; } }
 
         public Sort Add(SortCondition sortCondition)

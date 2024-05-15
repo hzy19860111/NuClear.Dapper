@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using NuClear.Dapper.Exceptions;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using NuClear.Dapper.Exceptions;
 
 namespace NuClear.Dapper.SqlResources.Scripting
 {
@@ -48,7 +48,5 @@ namespace NuClear.Dapper.SqlResources.Scripting
             }
             return defaultSqlNode;
         }
-
-
     }
 }

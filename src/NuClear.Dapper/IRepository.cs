@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace NuClear.Dapper
 {
-    public interface IRepository<TEntity> : IDisposable where TEntity : IEntity
+    public interface IRepository<TKey, TEntity> : IDisposable
+        where TEntity : IEntity<TKey>
     {
-        TEntity FirstOrDefault(string id);
+        TEntity FirstOrDefault(TKey id);
 
         TEntity FirstOrDefault(Query query, Sort sort = null);
 
@@ -21,7 +22,7 @@ namespace NuClear.Dapper
         /// <param name="query"></param>
         /// <returns></returns>
         int Count(Query query);
-        bool Exists(string id);
+        bool Exists(TKey id);
         bool Exists(Query query);
         IEnumerable<TEntity> Query(Query query, Sort sort = null);
         IEnumerable<TEntity> Query(string query, object parameters = null);
@@ -38,19 +39,17 @@ namespace NuClear.Dapper
         IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, string split = null) where TReturn : class;
         IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object param = null, string split = null) where TReturn : class;
 
-
-
         void Insert(TEntity entity);
         void InsertBatch(IEnumerable<TEntity> entities);
         int Execute(string sql, object parameters = null, CommandType? commandType = null);
-        void Delete(string id);
+        void Delete(TKey id);
         void Delete(TEntity entity);
-        void DeleteBatch(params string[] ids);
+        void DeleteBatch(params TKey[] ids);
         void DeleteBatch(IEnumerable<TEntity> entities);
         void Update(TEntity entity);
         void UpdateBatch(IEnumerable<TEntity> entities);
 
-        Task<TEntity> FirstOrDefaultAsync(string id);
+        Task<TEntity> FirstOrDefaultAsync(TKey id);
 
         Task<TEntity> FirstOrDefaultAsync(Query query, Sort sort = null);
 
@@ -62,7 +61,7 @@ namespace NuClear.Dapper
         /// <param name="query"></param>
         /// <returns></returns>
         Task<int> CountAsync(Query query);
-        Task<bool> ExistsAsync(string id);
+        Task<bool> ExistsAsync(TKey id);
         Task<bool> ExistsAsync(Query query);
         Task<IEnumerable<TEntity>> QueryAsync(Query query, Sort sort = null);
         Task<IEnumerable<TEntity>> QueryAsync(string query, object parameters = null);
@@ -77,7 +76,7 @@ namespace NuClear.Dapper
         Task<(IEnumerable<TAny>, int)> QueryPagedAsync<TAny>(string countSql, object countParameters, string query, object parameters) where TAny : class;
         Task InsertAsync(TEntity entity);
         Task<int> ExecuteAsync(string sql, object parameters = null, CommandType? commandType = null);
-        Task DeleteAsync(string id);
+        Task DeleteAsync(TKey id);
         Task DeleteAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
 

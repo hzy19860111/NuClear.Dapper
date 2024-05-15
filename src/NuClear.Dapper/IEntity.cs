@@ -5,17 +5,18 @@
     /// </summary>
     public interface IEntity
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
-        string Id { get; set; }
     }
 
-    public interface IEntity<T>
+    public interface IEntityWithLongKey : IEntity<long>
+    {
+
+    }
+
+    public interface IEntity<TKey> : IEntity
     {
         /// <summary>
         /// 主键
         /// </summary>
-        T Id { get; set; }
+        TKey Id { get; set; }
     }
 }
