@@ -16,7 +16,11 @@ namespace NuClear.Dapper.SqlResources.Scripting
 
         internal static INodeHandler GetNodeHandler(string nodeName)
         {
-            return _nodeHandlerMap[nodeName];
+            if (_nodeHandlerMap.TryGetValue(nodeName, out var handler))
+            {
+                return handler;
+            }
+            throw new SqlParseException($"不识别的ElementName:{nodeName}");
         }
 
         private static void InitNodeHandlerMap()
@@ -37,13 +41,13 @@ namespace NuClear.Dapper.SqlResources.Scripting
                 XNode child = children[i];
                 if (child.NodeType == System.Xml.XmlNodeType.Text || child.NodeType == System.Xml.XmlNodeType.CDATA)
                 {
-                    TextSqlNode textSqlNode = new TextSqlNode(((System.Xml.Linq.XText)child).Value);
+                    TextSqlNode textSqlNode = new TextSqlNode(((XText)child).Value);
                     contents.Add(textSqlNode);
                 }
                 else if (child.NodeType == System.Xml.XmlNodeType.Element)
                 {
                     var elementNode = XElement.Parse(child.ToString());
-                    var nodeName = elementNode.Name.ToString();
+                    var nodeName = elementNode.Name.ToString().ToLower();
                     INodeHandler handler = GetNodeHandler(nodeName) ?? throw new SqlParseException($"不识别的ElementName：{nodeName}!");
                     handler.HandleNode(elementNode, contents);
                 }

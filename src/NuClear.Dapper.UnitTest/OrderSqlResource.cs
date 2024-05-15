@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NuClear.Dapper.SqlResources;
+﻿using NuClear.Dapper.SqlResources;
+using System;
 
 namespace NuClear.Dapper.UnitTest
 {
