@@ -5,6 +5,16 @@
 	<AssemblyVersion>1.0.0.0</AssemblyVersion>
 	<AssemblyName>NuClear.Dapper</AssemblyName>
 	<RootNamespace>NuClear.Dapper</RootNamespace>
+	<IncludeSymbols>False</IncludeSymbols>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<Title>NuClear.Dapper</Title>
+	<Authors>NuClear</Authors>
+	<Company>NuClear</Company>
+	<Description>Dapper封装</Description>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>Dapper;Repository;UnitOfWork;QueryObject;</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +22,19 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Dapper" Version="2.0.35" />
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Dapper" Version="2.1.35" />
 	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="NuClear.Snowflake" Version="1.0.0" />
     <PackageReference Include="OGNL.Net" Version="1.0.1" />
   </ItemGroup>

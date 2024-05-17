@@ -42,12 +42,4 @@ namespace NuClear.Dapper
             GC.SuppressFinalize(this);
         }
     }
-
-    public class UnitOfWorkCompleteHandle : UnitOfWorkCompleteHandle<IContext>, IUnitOfWorkCompleteHandle
-    {
-        public UnitOfWorkCompleteHandle(UnitOfWork unitOfWork) : base(unitOfWork)
-        {
-
-        }
-    }
 }

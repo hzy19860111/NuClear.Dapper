@@ -7,7 +7,7 @@ namespace NuClear.Dapper.Utility
     /// <summary>
     /// 根据数组 分页处理业务 工具类（一般用作dapper 根据in查询，dapper in 查询将数组 拼接为 参数，SqlServer最多支持2000）
     /// </summary>
-    public static class BatchFuncUtility
+    public static class BatchUtility
     {
         /// <summary>
         /// 批量操作
@@ -20,27 +20,14 @@ namespace NuClear.Dapper.Utility
         public static List<TResult> BatchFunc<TResult>(string[] batchSource, Func<string[], List<TResult>> func, int batchCount = 200)
         {
 
-            var filterNullBatchSource = batchSource?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+            var notNullBatchSource = batchSource?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 
-            if (filterNullBatchSource == null || !filterNullBatchSource.Any())
+            if (notNullBatchSource == null || !notNullBatchSource.Any())
             {
                 return new List<TResult>(0);
             }
 
-            IEnumerable<TResult> result = null;
-            for (int i = 0; i < (filterNullBatchSource.Length - 1) / batchCount + 1; i++)
-            {
-                if (result == null)
-                {
-                    result = func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
-                }
-                else
-                {
-                    result = result.Union(func(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray()));
-                }
-            }
-
-            return result.ToList();
+            return InternalBatchFunc(func, batchCount, notNullBatchSource);
         }
 
         /// <summary>
@@ -53,13 +40,18 @@ namespace NuClear.Dapper.Utility
         /// <returns></returns>
         public static List<TResult> BatchFuncGenericSource<TSrouce, TResult>(TSrouce[] batchSource, Func<TSrouce[], List<TResult>> func, int batchCount = 200)
         {
-            var filterNullBatchSource = batchSource?.ToArray();
+            var notNullBatchSource = batchSource?.ToArray();
 
-            if (filterNullBatchSource == null || !filterNullBatchSource.Any())
+            if (notNullBatchSource == null || !notNullBatchSource.Any())
             {
                 return new List<TResult>(0);
             }
 
+            return InternalBatchFunc(func, batchCount, notNullBatchSource);
+        }
+
+        private static List<TResult> InternalBatchFunc<TSrouce, TResult>(Func<TSrouce[], List<TResult>> func, int batchCount, TSrouce[] filterNullBatchSource)
+        {
             IEnumerable<TResult> result = null;
             for (int i = 0; i < (filterNullBatchSource.Length - 1) / batchCount + 1; i++)
             {
@@ -87,16 +79,16 @@ namespace NuClear.Dapper.Utility
         public static void BatchAction<T>(T[] batchSource, Action<T[]> action, int batchCount = 200) where T : class
         {
 
-            var filterNullBatchSource = batchSource?.Where(s => s != null).ToArray();
+            var notNullBatchSource = batchSource?.Where(s => s != null).ToArray();
 
-            if (filterNullBatchSource == null || !filterNullBatchSource.Any())
+            if (notNullBatchSource == null || !notNullBatchSource.Any())
             {
                 return;
             }
 
-            for (int i = 0; i < (filterNullBatchSource.Length - 1) / batchCount + 1; i++)
+            for (int i = 0; i < (notNullBatchSource.Length - 1) / batchCount + 1; i++)
             {
-                action(filterNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
+                action(notNullBatchSource.Skip(i * batchCount).Take(batchCount).ToArray());
             }
         }
     }

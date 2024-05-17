@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{6C61AD49-900F-4B98-A13A-244CA00BBA20}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuClear.Dapper", "src\NuClear.Dapper\NuClear.Dapper.csproj", "{EAC53CFC-0A21-460C-9C30-B61865965EC2}"

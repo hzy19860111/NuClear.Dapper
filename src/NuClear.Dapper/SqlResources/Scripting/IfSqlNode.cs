@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NuClear.Dapper.SqlResources.Scripting
+﻿namespace NuClear.Dapper.SqlResources.Scripting
 {
     public class IfSqlNode : ISqlNode
     {

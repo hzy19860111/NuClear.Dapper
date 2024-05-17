@@ -7,11 +7,6 @@
     {
     }
 
-    public interface IEntityWithLongKey : IEntity<long>
-    {
-
-    }
-
     public interface IEntity<TKey> : IEntity
     {
         /// <summary>
@@ -19,4 +14,11 @@
         /// </summary>
         TKey Id { get; set; }
     }
+
+    public interface IEntityWithLongKey : IEntity<long>
+    {
+
+    }
+
+
 }

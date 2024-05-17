@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -102,13 +101,13 @@ namespace NuClear.Dapper.QueryObject
                         sql = criterionSqlParser.ToTableValueSql(c);
                     else
                         sql = criterionSqlParser.ToSql(c);
-                        
-                    if (c.Operator != CriteriaOperator.IsNull 
+
+                    if (c.Operator != CriteriaOperator.IsNull
                         && c.Operator != CriteriaOperator.IsNotNull
                         && c.Operator != CriteriaOperator.None
                         && !(c is Criterion.TableValueCriterion))
                     {
-                        result.SqlParameters.Add(new SqlParameter(c.PropertyParameterName, c.Value));
+                        result.SqlParameters.Add(new SqlParam(c.PropertyParameterName, c.Value));
                     }
                     return sql;
                 }).Where(sql => !string.IsNullOrEmpty(sql)).ToList();

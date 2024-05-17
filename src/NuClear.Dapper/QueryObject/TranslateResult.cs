@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
-using NuClear.Dapper.Extensions;
+﻿using System.Collections.Generic;
 
 namespace NuClear.Dapper.QueryObject
 {
@@ -8,10 +6,10 @@ namespace NuClear.Dapper.QueryObject
     {
         public TranslateResult()
         {
-            this.SqlParameters = new List<SqlParameter>();
+            this.SqlParameters = new List<SqlParam>();
         }
         public string Sql { get; set; }
-        public List<SqlParameter> SqlParameters { get; set; }
+        public List<SqlParam> SqlParameters { get; set; }
 
         public object Parameter { get { return this.SqlParameters.ToDynamicObject(); } }
     }

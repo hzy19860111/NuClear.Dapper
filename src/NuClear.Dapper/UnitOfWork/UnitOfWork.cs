@@ -60,11 +60,4 @@ namespace NuClear.Dapper
         }
         #endregion
     }
-
-    public class UnitOfWork : UnitOfWork<IContext>, IUnitOfWork<IContext>, IUnitOfWork
-    {
-        public UnitOfWork(IContext context) : base(context)
-        {
-        }
-    }
 }
