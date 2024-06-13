@@ -31,11 +31,5 @@
         /// <param name="newSql"></param>
         /// <returns></returns>
         string ReplaceFieldSql(string selectSql, string newSql);
-        /// <summary>
-        /// 获取重新编译SQL
-        /// </summary>
-        /// <param name="recompile"></param>
-        /// <returns></returns>
-        string GetRecompileSql(bool recompile);
     }
 }

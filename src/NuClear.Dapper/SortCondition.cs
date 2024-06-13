@@ -22,7 +22,7 @@
         public static string ToSql(this SortCondition sort)
         {
             var aliasName = string.IsNullOrWhiteSpace(sort.TableAliasName) ? "" : sort.TableAliasName + ".";
-            return string.Format("{0}{1} {2}", aliasName, sort.SortKey, sort.IsAscending ? "asc" : "desc");
+            return $"{aliasName}{sort.SortKey} {(sort.IsAscending ? "asc" : "desc")}";
         }
     }
 }

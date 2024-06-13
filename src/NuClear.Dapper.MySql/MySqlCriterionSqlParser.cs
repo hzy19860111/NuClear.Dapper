@@ -13,7 +13,7 @@ namespace NuClear.Dapper.MySql
 
             if (oper == null && !string.IsNullOrWhiteSpace(fixedKeywordPropertyName))
             {
-                return string.Format("{0}", fixedKeywordPropertyName);
+                return fixedKeywordPropertyName;
             }
 
             var aliasName = string.IsNullOrWhiteSpace(criterion.TableAliasName) ? "" : criterion.TableAliasName + ".";
@@ -43,17 +43,20 @@ namespace NuClear.Dapper.MySql
 
             if (criterion.Operator == CriteriaOperator.IsNotNull || criterion.Operator == CriteriaOperator.IsNull)
             {
-                return string.Format("{0}{1} {2}", aliasName, fixedKeywordPropertyName, oper);
+                return $"{aliasName}{fixedKeywordPropertyName} {oper}";
             }
 
-            return string.Format("{0}{1} {2} @{3}", aliasName, fixedKeywordPropertyName, oper, criterion.PropertyParameterName);
+            return $"{aliasName}{fixedKeywordPropertyName} {oper} @{criterion.PropertyParameterName}";
         }
 
 
         public string ToTableValueSql(Criterion criterion)
         {
             string oper = criterion.Operator.ToSqlOperator();
-            if (oper == null) return null;
+            if (oper == null)
+            {
+                return null;
+            }
 
             if (criterion.Operator == CriteriaOperator.Like || criterion.Operator == CriteriaOperator.NotLike)
             {

@@ -14,7 +14,7 @@ namespace NuClear.Dapper
 
         TEntity FirstOrDefault(Query query, Sort sort = null);
 
-        int Count(string sql, object parameters = null, bool recompile = false);
+        int Count(string sql, object parameters = null);
 
         /// <summary>
         /// TEntity count
@@ -29,11 +29,9 @@ namespace NuClear.Dapper
         IEnumerable<TEntity> QueryPaged(Query query, Pager pager, Sort sort);
         IEnumerable<TEntity> QueryPaged(Query query, Pager pager, Sort sort, AggrQuery aggrQuery);
         IEnumerable<TEntity> QueryPaged(string countSql, object countParameters, string query, object parameters, out int totalCount);
-        IEnumerable<TAny> Query<TAny>(string selectSql, Query query, Sort sort = null, bool recompile = false);
-        IEnumerable<TAny> Query<TAny>(string selectSql, Query query, string andWhereSql, Dictionary<string, object> parameters, Sort sort = null);
-        IEnumerable<TAny> QueryPaged<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null, bool recompile = false);
-        IEnumerable<TAny> QueryPaged<TAny>(string selectSql, Query query, Pager pager, Sort sort, string andWhereSql, Dictionary<string, object> parameters, AggrQuery aggrQuery = null);
-        IEnumerable<TAny> Query<TAny>(string query, object parameters = null, bool recompile = false);
+        IEnumerable<TAny> Query<TAny>(string selectSql, Query query, Sort sort = null);
+        IEnumerable<TAny> QueryPaged<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null);
+        IEnumerable<TAny> Query<TAny>(string query, object parameters = null);
         IEnumerable<TAny> QueryPaged<TAny>(string countSql, object countParameters, string query, object parameters, out int totalCount) where TAny : class;
 
         IEnumerable<TReturn> Query<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, string split = null) where TReturn : class;
@@ -53,7 +51,7 @@ namespace NuClear.Dapper
 
         Task<TEntity> FirstOrDefaultAsync(Query query, Sort sort = null);
 
-        Task<int> CountAsync(string sql, object parameters = null, bool recompile = false);
+        Task<int> CountAsync(string sql, object parameters = null);
 
         /// <summary>
         /// TEntity count
@@ -68,11 +66,9 @@ namespace NuClear.Dapper
         Task<IEnumerable<TEntity>> QueryPagedAsync(Query query, Pager pager, Sort sort);
         Task<IEnumerable<TEntity>> QueryPagedAsync(Query query, Pager pager, Sort sort, AggrQuery aggrQuery);
         Task<(IEnumerable<TEntity>, int)> QueryPagedAsync(string countSql, object countParameters, string query, object parameters);
-        Task<IEnumerable<TAny>> QueryAsync<TAny>(string selectSql, Query query, Sort sort = null, bool recompile = false);
-        Task<IEnumerable<TAny>> QueryAsync<TAny>(string selectSql, Query query, string andWhereSql, Dictionary<string, object> parameters, Sort sort = null);
-        Task<IEnumerable<TAny>> QueryPagedAsync<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null, bool recompile = false);
-        Task<IEnumerable<TAny>> QueryPagedAsync<TAny>(string selectSql, Query query, Pager pager, Sort sort, string andWhereSql, Dictionary<string, object> parameters, AggrQuery aggrQuery = null, bool recompile = false);
-        Task<IEnumerable<TAny>> QueryAsync<TAny>(string query, object parameters = null, bool recompile = false);
+        Task<IEnumerable<TAny>> QueryAsync<TAny>(string selectSql, Query query, Sort sort = null);
+        Task<IEnumerable<TAny>> QueryPagedAsync<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null);
+        Task<IEnumerable<TAny>> QueryAsync<TAny>(string query, object parameters = null);
         Task<(IEnumerable<TAny>, int)> QueryPagedAsync<TAny>(string countSql, object countParameters, string query, object parameters) where TAny : class;
         Task InsertAsync(TEntity entity);
         Task<int> ExecuteAsync(string sql, object parameters = null, CommandType? commandType = null);

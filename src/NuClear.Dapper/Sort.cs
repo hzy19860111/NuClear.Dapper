@@ -48,9 +48,11 @@ namespace NuClear.Dapper
             string[] tempSQLs = query.Sorts.Select(s => s.ToSql()).ToArray();
 
             if (tempSQLs.Length == 0)
+            {
                 return null;
+            }
 
-            return string.Format(" order by {0}", string.Join(",", tempSQLs));
+            return $" order by {string.Join(",", tempSQLs)}";
         }
     }
 }

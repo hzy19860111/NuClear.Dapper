@@ -120,12 +120,14 @@ namespace NuClear.Dapper.QueryObject
                     if (subResult == null)
                         continue;
 
-                    tempSQLs.Add(string.Format("({0})", subResult.Sql));
+                    tempSQLs.Add($"({subResult.Sql})");
                     result.SqlParameters.AddRange(subResult.SqlParameters);
                 }
             }
             if (tempSQLs.Count == 0)
+            {
                 return null;
+            }
 
             result.Sql = string.Join(query.Operator == QueryOperator.And ? " and " : " or ", tempSQLs);
             return result;

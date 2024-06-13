@@ -139,9 +139,9 @@ namespace NuClear.Dapper
         #endregion
 
         #region Count
-        public virtual int Count(string sql, object parameters = null, bool recompile = false)
+        public virtual int Count(string sql, object parameters = null)
         {
-            return InternalExecuteScalar<int>(sql + GetRecompileSql(recompile), parameters);
+            return InternalExecuteScalar<int>(sql, parameters);
         }
 
         public virtual int Count(Query query)
@@ -150,9 +150,9 @@ namespace NuClear.Dapper
             return this.Count(CombineCountSql(this.SelectSql, whereSql), param);
         }
 
-        public virtual async Task<int> CountAsync(string sql, object parameters = null, bool recompile = false)
+        public virtual async Task<int> CountAsync(string sql, object parameters = null)
         {
-            return await InternalExecuteScalarAsync<int>(sql + GetRecompileSql(recompile), parameters);
+            return await InternalExecuteScalarAsync<int>(sql, parameters);
         }
 
         public virtual async Task<int> CountAsync(Query query)
@@ -278,7 +278,7 @@ namespace NuClear.Dapper
 
         protected string CombineCountSql(string selectSql, string whereSql)
         {
-            return string.Format("{0} {1}", this.SqlParser.CreateCountSqlBySelectSql(selectSql), whereSql);
+            return $"{this.SqlParser.CreateCountSqlBySelectSql(selectSql)} {whereSql}";
         }
 
         /// <summary>
@@ -287,7 +287,6 @@ namespace NuClear.Dapper
         /// <param name="selectSql"></param>
         /// <param name="whereSql"></param>
         /// <param name="sortSql"></param>
-        /// <param name="recompile">是否配置OPTION(RECOMPILE)</param>
         /// <returns></returns>
         protected string CombinePagedSql(string selectSql, string whereSql, string sortSql, Pager pager = null)
         {
@@ -318,14 +317,9 @@ namespace NuClear.Dapper
             return this.SqlParser.ReplaceFieldSql(selectSql, this.AggrQuerySqlParser.Translate(query));
         }
 
-        protected void SetAggr(string sql, AggrQuery aggrQuery, object param, bool recompile = false)
+        protected void SetAggr(string sql, AggrQuery aggrQuery, object param)
         {
-            aggrQuery.SetResult(InternalQuery(GetAggrSelectSql(sql, aggrQuery) + GetRecompileSql(recompile), param).FirstOrDefault());
-        }
-
-        protected string GetRecompileSql(bool recompile)
-        {
-            return SqlParser.GetRecompileSql(recompile);
+            aggrQuery.SetResult(InternalQuery(GetAggrSelectSql(sql, aggrQuery), param).FirstOrDefault());
         }
 
         public virtual async Task<IEnumerable<TEntity>> QueryAsync(Query query, Sort sort = null)
@@ -383,12 +377,12 @@ namespace NuClear.Dapper
         #endregion
 
         #region Query TAny
-        public virtual IEnumerable<TAny> Query<TAny>(string selectSql, Query query, Sort sort = null, bool recompile = false)
+        public virtual IEnumerable<TAny> Query<TAny>(string selectSql, Query query, Sort sort = null)
         {
             string whereSql = GetWhereSql(query, out object param);
-            return InternalQuery<TAny>(CombineSql(selectSql, whereSql, sort?.Translate()) + GetRecompileSql(recompile), param);
+            return InternalQuery<TAny>(CombineSql(selectSql, whereSql, sort?.Translate()), param);
         }
-        public virtual IEnumerable<TAny> QueryPaged<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null, bool recompile = false)
+        public virtual IEnumerable<TAny> QueryPaged<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null)
         {
             if (pager == null)
                 throw new ArgumentNullException(nameof(pager));
@@ -397,19 +391,19 @@ namespace NuClear.Dapper
             param = AddPagedParams(param, pager);
             if (pager.IsGetTotalCount)
             {
-                pager.TotalCount = this.Count(CombineCountSql(selectSql, whereSql), param, recompile);
+                pager.TotalCount = this.Count(CombineCountSql(selectSql, whereSql), param);
             }
             if (aggrQuery != null)
             {
                 var sql = CombineSql(selectSql, whereSql);
-                SetAggr(sql, aggrQuery, param, recompile);
+                SetAggr(sql, aggrQuery, param);
             }
-            return InternalQuery<TAny>(CombinePagedSql(selectSql, whereSql, sort?.Translate(), pager) + GetRecompileSql(recompile), param);
+            return InternalQuery<TAny>(CombinePagedSql(selectSql, whereSql, sort?.Translate(), pager), param);
         }
 
-        public virtual IEnumerable<TAny> Query<TAny>(string query, object parameters = null, bool recompile = false)
+        public virtual IEnumerable<TAny> Query<TAny>(string sql, object parameters = null)
         {
-            return InternalQuery<TAny>(query + GetRecompileSql(recompile), parameters);
+            return InternalQuery<TAny>(sql, parameters);
         }
 
         public virtual IEnumerable<TAny> QueryPaged<TAny>(string countSql, object countParameters, string query, object parameters, out int totalCount) where TAny : class
@@ -427,125 +421,34 @@ namespace NuClear.Dapper
             return InternalQuery<TFirst, TSecond, TThird, TReturn>(sql, map, param, splitOn: split ?? "Id");
         }
 
-        public virtual IEnumerable<TAny> QueryPaged<TAny>(string selectSql, Query query, Pager pager, Sort sort, string andWhereSql, Dictionary<string, object> parameters, AggrQuery aggrQuery = null)
+        public virtual async Task<IEnumerable<TAny>> QueryAsync<TAny>(string selectSql, Query query, Sort sort = null)
+        {
+            string whereSql = GetWhereSql(query, out object param);
+            return await InternalQueryAsync<TAny>(CombineSql(selectSql, whereSql, sort?.Translate()), param);
+        }
+
+        public virtual async Task<IEnumerable<TAny>> QueryPagedAsync<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null)
         {
             if (pager == null)
                 throw new ArgumentNullException(nameof(pager));
 
             string whereSql = GetWhereSql(query, out object param);
-            whereSql = AddWhereSql(whereSql, andWhereSql);
-
             param = AddPagedParams(param, pager);
-            IDictionary<string, object> dic = AddParams(param, parameters);
             if (pager.IsGetTotalCount)
             {
-                pager.TotalCount = this.Count(CombineCountSql(selectSql, whereSql), dic);
+                pager.TotalCount = this.Count(CombineCountSql(selectSql, whereSql), param);
             }
             if (aggrQuery != null)
             {
                 var sql = CombineSql(selectSql, whereSql);
                 SetAggr(sql, aggrQuery, param);
             }
-            return InternalQuery<TAny>(CombinePagedSql(selectSql, whereSql, sort?.Translate(), pager), dic);
+            return await InternalQueryAsync<TAny>(CombinePagedSql(selectSql, whereSql, sort?.Translate(), pager), param);
         }
 
-        private static IDictionary<string, object> AddParams(object sourceParam, Dictionary<string, object> addParameters)
+        public virtual async Task<IEnumerable<TAny>> QueryAsync<TAny>(string sql, object parameters = null)
         {
-            IDictionary<string, object> dic = sourceParam as IDictionary<string, object>;
-            if (dic != null && addParameters != null && addParameters.Any())
-            {
-                foreach (var item in addParameters)
-                {
-                    dic.Add(item);
-                }
-            }
-
-            return dic;
-        }
-
-        public virtual IEnumerable<TAny> Query<TAny>(string selectSql, Query query, string andWhereSql, Dictionary<string, object> parameters, Sort sort = null)
-        {
-            string whereSql = GetWhereSql(query, out object param);
-            whereSql = AddWhereSql(whereSql, andWhereSql);
-
-            IDictionary<string, object> dic = AddParams(param, parameters);
-            return InternalQuery<TAny>(CombineSql(selectSql, whereSql, sort?.Translate()), dic);
-        }
-
-        private string AddWhereSql(string whereSql, string andWhereSql)
-        {
-            if (string.IsNullOrWhiteSpace(whereSql))
-            {
-                whereSql = " where 1=1 " + andWhereSql;
-            }
-            else
-            {
-                whereSql += " " + andWhereSql;
-            }
-
-            return whereSql;
-        }
-
-
-        public virtual async Task<IEnumerable<TAny>> QueryAsync<TAny>(string selectSql, Query query, Sort sort = null, bool recompile = false)
-        {
-            string whereSql = GetWhereSql(query, out object param);
-            return await InternalQueryAsync<TAny>(CombineSql(selectSql, whereSql, sort?.Translate()) + GetRecompileSql(recompile), param);
-        }
-
-        public virtual async Task<IEnumerable<TAny>> QueryAsync<TAny>(string selectSql, Query query, string andWhereSql, Dictionary<string, object> parameters, Sort sort = null)
-        {
-            string whereSql = GetWhereSql(query, out object param);
-            whereSql = AddWhereSql(whereSql, andWhereSql);
-
-            IDictionary<string, object> dic = AddParams(param, parameters);
-            return await InternalQueryAsync<TAny>(CombineSql(selectSql, whereSql, sort?.Translate()), dic);
-        }
-
-        public virtual async Task<IEnumerable<TAny>> QueryPagedAsync<TAny>(string selectSql, Query query, Pager pager, Sort sort, AggrQuery aggrQuery = null, bool recompile = false)
-        {
-            if (pager == null)
-                throw new ArgumentNullException(nameof(pager));
-
-            string whereSql = GetWhereSql(query, out object param);
-            param = AddPagedParams(param, pager);
-            if (pager.IsGetTotalCount)
-            {
-                pager.TotalCount = this.Count(CombineCountSql(selectSql, whereSql), param, recompile);
-            }
-            if (aggrQuery != null)
-            {
-                var sql = CombineSql(selectSql, whereSql);
-                SetAggr(sql, aggrQuery, param, recompile);
-            }
-            return await InternalQueryAsync<TAny>(CombinePagedSql(selectSql, whereSql, sort?.Translate(), pager) + GetRecompileSql(recompile), param);
-        }
-
-        public virtual async Task<IEnumerable<TAny>> QueryPagedAsync<TAny>(string selectSql, Query query, Pager pager, Sort sort, string andWhereSql, Dictionary<string, object> parameters, AggrQuery aggrQuery = null, bool recompile = false)
-        {
-            if (pager == null)
-                throw new ArgumentNullException(nameof(pager));
-
-            string whereSql = GetWhereSql(query, out object param);
-            whereSql = AddWhereSql(whereSql, andWhereSql);
-
-            param = AddPagedParams(param, pager);
-            IDictionary<string, object> dic = AddParams(param, parameters);
-            if (pager.IsGetTotalCount)
-            {
-                pager.TotalCount = this.Count(CombineCountSql(selectSql, whereSql), dic, recompile);
-            }
-            if (aggrQuery != null)
-            {
-                var sql = CombineSql(selectSql, whereSql);
-                SetAggr(sql, aggrQuery, param, recompile);
-            }
-            return await InternalQueryAsync<TAny>(CombinePagedSql(selectSql, whereSql, sort?.Translate(), pager) + GetRecompileSql(recompile), dic);
-        }
-
-        public virtual async Task<IEnumerable<TAny>> QueryAsync<TAny>(string query, object parameters = null, bool recompile = false)
-        {
-            return await InternalQueryAsync<TAny>(query + GetRecompileSql(recompile), parameters);
+            return await InternalQueryAsync<TAny>(sql, parameters);
         }
 
         public virtual async Task<(IEnumerable<TAny>, int)> QueryPagedAsync<TAny>(string countSql, object countParameters, string query, object parameters) where TAny : class

@@ -55,10 +55,5 @@ namespace NuClear.Dapper.SqlServer
             var fieldListSql = GetFieldListSql(selectSql);
             return selectSql.Replace(fieldListSql, " " + newSql + " ");
         }
-
-        public string GetRecompileSql(bool recompile)
-        {
-            return recompile ? " OPTION(RECOMPILE)" : "";
-        }
     }
 }
