@@ -19,9 +19,9 @@ namespace NuClear.Dapper.UnitTest
         [Test]
         public void ExpressionEvaluatorStringTest()
         {
-            var test = "StoreHouseId != null and StoreHouseId != ''";
-            var obj = new { StoreHouseId = "" };
-            var obj1 = new { StoreHouseId = "123" };
+            var test = "Id != null and Id != ''";
+            var obj = new { Id = "" };
+            var obj1 = new { Id = "123" };
 
 
             Assert.IsFalse(evaluator.EvaluateBoolean(test, obj));
@@ -31,10 +31,10 @@ namespace NuClear.Dapper.UnitTest
         [Test]
         public void ExpressionEvaluatorIntTest()
         {
-            var test = "SaleMode == 99";
-            var test1 = "SaleMode == null";
+            var test = "OrderType == 2";
+            var test1 = "OrderType == null";
 
-            var obj = new { SaleMode = 99 };
+            var obj = new { OrderType = 2 };
 
             Assert.IsTrue(evaluator.EvaluateBoolean(test, obj));
             Assert.IsFalse(evaluator.EvaluateBoolean(test1, obj));
@@ -50,8 +50,8 @@ namespace NuClear.Dapper.UnitTest
         [Test]
         public void ExpressionEvaluatorArrayTest()
         {
-            var test = "StoreHouseIds != null and StoreHouseIds.Length > 0";
-            var test1 = "StoreHouseIds == null";
+            var test = "Ids != null and Ids.Length > 0";
+            var test1 = "Ids == null";
 
             var obj = new { };
 
@@ -59,7 +59,7 @@ namespace NuClear.Dapper.UnitTest
             Assert.IsTrue(evaluator.EvaluateBoolean(test1, obj));
 
 
-            var obj1 = new { StoreHouseIds = new string[] { "1234" } };
+            var obj1 = new { Ids = new string[] { "1234" } };
 
             Assert.IsTrue(evaluator.EvaluateBoolean(test, obj1));
             Assert.IsFalse(evaluator.EvaluateBoolean(test1, obj1));
@@ -68,8 +68,8 @@ namespace NuClear.Dapper.UnitTest
         [Test]
         public void ExpressionEvaluatorClassTest()
         {
-            var test = "StoreHouseIds != null && StoreHouseIds.Length > 0";
-            var test1 = "StoreHouseId == '123' && SaleMode == 99";
+            var test = "Ids != null && Ids.Length > 0";
+            var test1 = "Id == '123' && OrderType == 2";
 
             var search = new Search();
 
@@ -80,10 +80,10 @@ namespace NuClear.Dapper.UnitTest
 
     public class Search
     {
-        public string StoreHouseId { get; set; } = "123";
-        public int SaleMode { get; set; } = 99;
+        public string Id { get; set; } = "123";
+        public int OrderType { get; set; } = 2;
 
-        public string[] StoreHouseIds { get; set; }
+        public string[] Ids { get; set; }
     }
 
 }
